@@ -203,6 +203,7 @@
 #include "Move_FNPR.h"
 #include "Move_TipTimeSlideUniform.h"
 #include "Move_GibbsPruneAndRegraft.h"
+#include "Move_GibbsSubtreePruneAndRegraft.h"
 #include "Move_GibbsSubtreeSwap.h"
 #include "Move_LayeredScaleProposal.h"
 #include "Move_NarrowExchange.h"
@@ -403,6 +404,7 @@ void RevLanguage::Workspace::initializeMoveGlobalWorkspace(void)
 		addType( new Move_EmpiricalTree()                    );
         addType( new Move_FNPR()                             );
         addType( new Move_GibbsPruneAndRegraft()             );
+        addType( new Move_GibbsSubtreePruneAndRegraft()      );
         addType( new Move_GibbsSubtreeSwap()                 );
         addType( new Move_LayeredScaleProposal()             );
         addType( new Move_NarrowExchange()                   );
