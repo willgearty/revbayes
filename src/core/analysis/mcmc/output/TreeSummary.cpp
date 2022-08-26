@@ -1297,6 +1297,17 @@ int TreeSummary::getTopologyFrequency(const RevBayesCore::Tree &tree, bool verbo
     return freq;
 }
 
+const std::set<TreeSummary::Sample<std::string> >& TreeSummary::getTreeSamples(void) const
+{
+    // the tree samples might not have been collected
+    // so we need to make sure that a summary was performed before
+    // I find this safer to do here than expecting the caller to know about this.
+    const_cast<TreeSummary*>(this)->summarize( true );
+    
+    return tree_samples;
+}
+
+
 
 std::vector<Clade> TreeSummary::getUniqueClades( double min_clade_prob, bool non_trivial_only, bool verbose )
 {
