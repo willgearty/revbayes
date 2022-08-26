@@ -231,6 +231,8 @@
 #include "Move_TreeScale.h"
 //#include "Move_WeightedNodeTimeSlide.h"
 #include "Move_WeightedBranchLengthScale.h"
+#include "Move_WeightedSubtreePruneAndRegraft.h"
+#include "Move_WeightedSubtreeSwap.h"
 
 
 #include "Move_NarrowExchangeRateMatrix.h"
@@ -433,6 +435,8 @@ void RevLanguage::Workspace::initializeMoveGlobalWorkspace(void)
         addType( new Move_SpeciesTreeScale()                 );
         addType( new Move_TreeScale()                        );
         addType( new Move_WeightedBranchLengthScale()        );
+        addType( new Move_WeightedSubtreePruneAndRegraft()   );
+        addType( new Move_WeightedSubtreeSwap()              );
 
         /* Moves on character histories / data augmentation */
         addType( new Move_CharacterHistory() );
