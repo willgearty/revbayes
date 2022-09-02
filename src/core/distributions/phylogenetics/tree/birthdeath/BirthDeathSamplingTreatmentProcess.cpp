@@ -382,7 +382,8 @@ double BirthDeathSamplingTreatmentProcess::computeLnProbabilityTimes( void ) con
                 }
                 if ( T_i > 0 )
                 { 
-                    ln_sampling_event_prob += T_i * log(r_event[i] + (1 - r_event[i])*E(i,global_timeline[i]));
+                    double E_t = (i+1 < global_timeline.size()) ? E(i,global_timeline[i]) : E_previous[i+1];
+                    ln_sampling_event_prob += T_i * log(r_event[i] + (1 - r_event[i])*E_t);
                 }
                 
             }
