@@ -721,6 +721,35 @@ bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
   return false;
 }
 
+// bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
+// {
+// //   // get node/time variables
+// //   size_t num_nodes = value->getNumberOfNodes();
+
+// //   size_t num_extant_taxa = 0;
+
+//   // clear current
+//   serial_tip_ages.clear();
+//   serial_sampled_ancestor_ages.clear();
+//   event_tip_ages.clear();
+//   event_sampled_ancestor_ages.clear();
+//   serial_bifurcation_times.clear();
+//   event_bifurcation_times.clear();
+//   unsampled_survivors_i.clear();
+
+//   // initialize vectors of vectors
+//   event_sampled_ancestor_ages = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//   event_tip_ages = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//   event_bifurcation_times = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//   unsampled_survivors_i = std::vector<int>(global_timeline.size(),0);
+
+//   TopologyNode& root = value->getRoot();
+//   int idx = findIndex(root.getAge());
+//   std::cout << "<<<<<<<STARTING RECURSION AT root, index " << root.getIndex() << " >>>>>>>>" << std::endl;
+//   countAllNodesRecursive(root, idx);
+
+//   return count_node_validity_flag;
+// }
 
 /**
  * Compute ln(D_i(t))
