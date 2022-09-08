@@ -89,6 +89,7 @@ namespace RevBayesCore {
         void                                            sortGlobalTimesAndVectorParameter(void) const;                          //!< Sorts times to run from 0->inf, and orders ALL vector parameters to match
         void                                            sortNonGlobalTimesAndVectorParameter(std::vector<double>& times, std::vector<double>& par) const;     //!< Sorts times to run from 0->inf, and orders par to match
         int                                             survivors(double t) const;                                              //!< Number of species alive at time t.
+        int                                             survivors(size_t idx) const;                                            //!< Number of species alive at time s_i.
         int                                             whichIntervalTime(double t) const;                                      //!< If a time corresponds to an interval/event time, returns that interval, otherwise returns -1
 
         // members
