@@ -1758,6 +1758,35 @@ int BirthDeathSamplingTreatmentProcess::survivors(double t) const
 }
 
 /**
+ * Compute the unsampled diversity of the tree at time global_timeline[idx].
+ *
+ * \param[in]    idx      timeline index
+ *
+ * \return The number of lineages which cross t, i.e. which span at least the interval (t-dt,d+dt)
+ */
+int BirthDeathSamplingTreatmentProcess::survivors(size_t idx) const
+{  
+    
+    int survivors = 0;
+    
+    // Here we handle anything at or before the root where we otherwise don't have a good count
+    if ( global_timeline[idx] > value->getRoot().getAge() - 1E-4 ) {
+        if ( use_origin ) {
+            if ( global_timeline[idx] > getOriginAge() ) {
+                return 0;
+            } else {
+                // TODO does this work right for when the oldest node is a pre-root sampled ancestor?
+                return event_sampled_ancestor_ages[idx].size() == 0 ? 1 : 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+    
+    return unsampled_survivors_i[idx];
+}
+
+/**
  * Sorts global times to run from present to past (0->inf) and orders ALL vector parameters to match this.
  * These can only be sorted after the local copies have values in them.
  */
