@@ -724,11 +724,6 @@ bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
 
 // bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
 // {
-// //   // get node/time variables
-// //   size_t num_nodes = value->getNumberOfNodes();
-
-// //   size_t num_extant_taxa = 0;
-
 //   // clear current
 //   serial_tip_ages.clear();
 //   serial_sampled_ancestor_ages.clear();
@@ -746,7 +741,6 @@ bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
 
 //   TopologyNode& root = value->getRoot();
 //   int idx = findIndex(root.getAge());
-//   std::cout << "<<<<<<<STARTING RECURSION AT root, index " << root.getIndex() << " >>>>>>>>" << std::endl;
 //   countAllNodesRecursive(root, idx);
 
 //   return count_node_validity_flag;
