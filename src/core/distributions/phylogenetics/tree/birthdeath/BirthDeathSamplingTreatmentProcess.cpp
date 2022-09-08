@@ -523,18 +523,19 @@ void BirthDeathSamplingTreatmentProcess::countAllNodesRecursive(const TopologyNo
     // Make sure we have the right model index
     int at_event = -1;
     double t = n.getAge();
-    double interval_young = idx == 0 ? 0.0 : global_timeline[idx-1];
-    while ( t < interval_young )
+    // std::cout << "counting node at time t = " << t << " with next interval boundary time " << global_timeline[idx] << std::endl;
+    while ( t < global_timeline[idx] )
     {
+        // std::cout << "    crossing boundary at time " << global_timeline[idx] << std::endl;
         ++unsampled_survivors_i[idx];
         --idx;
-        interval_young = idx == 0 ? 0.0 : global_timeline[idx-1];
     }
     
-    // TODO abs() is probably paranoid
-    if ( fabs(t - global_timeline[idx]) < 1E-4 ) {
+    // t < global_timeline[idx] by construction
+    if ( global_timeline[idx] - t < 1E-4 ) {
         at_event = idx;
-    } else if ( idx + 1 < global_timeline.size() && fabs(t - global_timeline[idx + 1]) < 1E-4 ) {
+    } else if ( idx + 1 < global_timeline.size() && t - global_timeline[idx + 1] < 1E-4 ) {
+        --unsampled_survivors_i[idx + 1];
         at_event = idx + 1;
     }
 
