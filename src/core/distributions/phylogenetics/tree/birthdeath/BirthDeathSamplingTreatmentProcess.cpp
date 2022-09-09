@@ -343,7 +343,7 @@ double BirthDeathSamplingTreatmentProcess::computeLnProbabilityTimes( void ) con
             int T_i = int(event_tip_ages[i].size());
             int I_i = S_i + T_i;
             int L_i = survivors(global_timeline[i]); //A(t_{\rho_i})
-            
+
             // Make sure that we aren't claiming to have sampled all lineages without having sampled all lineages
             if (phi_event[i] >= (1.0 - DBL_EPSILON) && (L_i != I_i) )
             {
@@ -440,6 +440,7 @@ double BirthDeathSamplingTreatmentProcess::computeLnProbabilityTimes( void ) con
 
             // Instead of adding the burst probability to ln_D we add it here.
             int active_lineages_at_t = survivors(global_timeline[i]); //A(t_{\rho_i})
+            
             int A_minus_K = active_lineages_at_t - int(event_bifurcation_times[i].size());
             lnProbTimes += A_minus_K * log(2*lambda_event[i]*E_previous[i]+(1.0 - lambda_event[i]));
 
@@ -516,101 +517,101 @@ double BirthDeathSamplingTreatmentProcess::computeLnProbabilityTimes( void ) con
     return lnProbTimes;
 }
 
-// To call this to do the whole tree, we need to find the index of the root, then call it there
-void BirthDeathSamplingTreatmentProcess::countAllNodesRecursive(const TopologyNode& n, size_t idx) const
-{
+// // To call this to do the whole tree, we need to find the index of the root, then call it there
+// void BirthDeathSamplingTreatmentProcess::countAllNodesRecursive(const TopologyNode& n, size_t idx) const
+// {
     
-    // Make sure we have the right model index
-    int at_event = -1;
-    double t = n.getAge();
-    // std::cout << "counting node at time t = " << t << " with next interval boundary time " << global_timeline[idx] << std::endl;
-    while ( t < global_timeline[idx] )
-    {
-        // std::cout << "    crossing boundary at time " << global_timeline[idx] << std::endl;
-        ++unsampled_survivors_i[idx];
-        --idx;
-    }
+//     // Make sure we have the right model index
+//     int at_event = -1;
+//     double t = n.getAge();
+//     // std::cout << "counting node at time t = " << t << " with next interval boundary time " << global_timeline[idx] << std::endl;
+//     while ( t < global_timeline[idx] )
+//     {
+//         // std::cout << "    crossing boundary at time " << global_timeline[idx] << std::endl;
+//         ++unsampled_survivors_i[idx];
+//         --idx;
+//     }
     
-    // t < global_timeline[idx] by construction
-    if ( global_timeline[idx] - t < 1E-4 ) {
-        at_event = idx;
-    } else if ( idx + 1 < global_timeline.size() && t - global_timeline[idx + 1] < 1E-4 ) {
-        --unsampled_survivors_i[idx + 1];
-        at_event = idx + 1;
-    }
+//     // t < global_timeline[idx] by construction
+//     if ( global_timeline[idx] - t < 1E-4 ) {
+//         at_event = idx;
+//     } else if ( idx + 1 < global_timeline.size() && t - global_timeline[idx + 1] < 1E-4 ) {
+//         --unsampled_survivors_i[idx + 1];
+//         at_event = idx + 1;
+//     }
 
-    // handle this node
-    if ( n.isTip() && n.isFossil() && n.isSampledAncestor() )
-    {
+//     // handle this node
+//     if ( n.isTip() && n.isFossil() && n.isSampledAncestor() )
+//     {
 
-        // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
-        if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
-        {
-            serial_sampled_ancestor_ages.push_back(t);
-        }
-        else
-        {
-            event_sampled_ancestor_ages[at_event].push_back(t);
-        }
-    }
-    else if ( n.isTip() && n.isFossil() && !n.isSampledAncestor() )
-    {
-        // node is serial leaf
-        int at_event = whichIntervalTime(t);
+//         // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
+//         if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
+//         {
+//             serial_sampled_ancestor_ages.push_back(t);
+//         }
+//         else
+//         {
+//             event_sampled_ancestor_ages[at_event].push_back(t);
+//         }
+//     }
+//     else if ( n.isTip() && n.isFossil() && !n.isSampledAncestor() )
+//     {
+//         // node is serial leaf
+//         int at_event = whichIntervalTime(t);
 
-        // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
-        if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
-        {
-            serial_tip_ages.push_back(t);
-        }
-        else
-        {
-            event_tip_ages[at_event].push_back(t);
-        }
-    }
-    else if ( n.isTip() && !n.isFossil() )
-    {
-        // Node is at present, this can happen even if Phi[0] = 0, so we check if there is really a sampling event at the present
-        if (phi_event[0] >= DBL_EPSILON)
-        {
-            event_tip_ages[0].push_back(0.0);
-        }
-        else
-        {
-            serial_tip_ages.push_back(0.0);
-        }
-    }
-    else if ( n.isInternal() && !n.getChild(0).isSampledAncestor() && !n.getChild(1).isSampledAncestor() )
-    {
-        if ( n.isRoot() == false || use_origin == true )
-        {
-            // node is bifurcation event (a "true" node)
-            int at_event = whichIntervalTime(t);
+//         // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
+//         if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
+//         {
+//             serial_tip_ages.push_back(t);
+//         }
+//         else
+//         {
+//             event_tip_ages[at_event].push_back(t);
+//         }
+//     }
+//     else if ( n.isTip() && !n.isFossil() )
+//     {
+//         // Node is at present, this can happen even if Phi[0] = 0, so we check if there is really a sampling event at the present
+//         if (phi_event[0] >= DBL_EPSILON)
+//         {
+//             event_tip_ages[0].push_back(0.0);
+//         }
+//         else
+//         {
+//             serial_tip_ages.push_back(0.0);
+//         }
+//     }
+//     else if ( n.isInternal() && !n.getChild(0).isSampledAncestor() && !n.getChild(1).isSampledAncestor() )
+//     {
+//         if ( n.isRoot() == false || use_origin == true )
+//         {
+//             // node is bifurcation event (a "true" node)
+//             int at_event = whichIntervalTime(t);
 
-            // If this bifurcation is not at an event time (and specifically at an event time with Lambda[i] > 0), it's a serial bifurcation
-            if ( at_event == -1 || lambda_event[at_event] < DBL_EPSILON)
-            {
-                serial_bifurcation_times.push_back(t);
-            }
-            else
-            {
-                event_bifurcation_times[at_event].push_back(t);
-            }
-        }
-    }
-    else if ( n.isInternal() && n.getChild(0).isSampledAncestor() && n.getChild(1).isSampledAncestor() )
-    {
-        count_node_validity_flag = true;
-    }
+//             // If this bifurcation is not at an event time (and specifically at an event time with Lambda[i] > 0), it's a serial bifurcation
+//             if ( at_event == -1 || lambda_event[at_event] < DBL_EPSILON)
+//             {
+//                 serial_bifurcation_times.push_back(t);
+//             }
+//             else
+//             {
+//                 event_bifurcation_times[at_event].push_back(t);
+//             }
+//         }
+//     }
+//     else if ( n.isInternal() && n.getChild(0).isSampledAncestor() && n.getChild(1).isSampledAncestor() )
+//     {
+//         count_node_validity_flag = true;
+//     }
 
-    // propagate
-    if ( n.isInternal() ) {
-        for (size_t i = 0; i < n.getNumberOfChildren(); ++i)
-        {
-            countAllNodesRecursive(n.getChild(i), idx);
-        }
-    }
-}
+//     // propagate
+//     if ( n.isInternal() ) {
+//         for (size_t i = 0; i < n.getNumberOfChildren(); ++i)
+//         {
+//             countAllNodesRecursive(n.getChild(i), idx);
+//         }
+//     }
+// }
 
 /*
  * Counts all nodes in a number of sets
@@ -1757,34 +1758,34 @@ int BirthDeathSamplingTreatmentProcess::survivors(double t) const
     return survivors;
 }
 
-/**
- * Compute the unsampled diversity of the tree at time global_timeline[idx].
- *
- * \param[in]    idx      timeline index
- *
- * \return The number of lineages which cross t, i.e. which span at least the interval (t-dt,d+dt)
- */
-int BirthDeathSamplingTreatmentProcess::survivors(size_t idx) const
-{  
+// /**
+//  * Compute the unsampled diversity of the tree at time global_timeline[idx].
+//  *
+//  * \param[in]    idx      timeline index
+//  *
+//  * \return The number of lineages which cross t, i.e. which span at least the interval (t-dt,d+dt)
+//  */
+// int BirthDeathSamplingTreatmentProcess::survivors(size_t idx) const
+// {  
     
-    int survivors = 0;
+//     int survivors = 0;
     
-    // Here we handle anything at or before the root where we otherwise don't have a good count
-    if ( global_timeline[idx] > value->getRoot().getAge() - 1E-4 ) {
-        if ( use_origin ) {
-            if ( global_timeline[idx] > getOriginAge() ) {
-                return 0;
-            } else {
-                // TODO does this work right for when the oldest node is a pre-root sampled ancestor?
-                return event_sampled_ancestor_ages[idx].size() == 0 ? 1 : 0;
-            }
-        } else {
-            return 0;
-        }
-    }
+//     // Here we handle anything at or before the root where we otherwise don't have a good count
+//     if ( global_timeline[idx] > value->getRoot().getAge() - 1E-4 ) {
+//         if ( use_origin ) {
+//             if ( global_timeline[idx] > getOriginAge() ) {
+//                 return 0;
+//             } else {
+//                 // TODO does this work right for when the oldest node is a pre-root sampled ancestor?
+//                 return event_sampled_ancestor_ages[idx].size() == 0 ? 1 : 0;
+//             }
+//         } else {
+//             return 0;
+//         }
+//     }
     
-    return unsampled_survivors_i[idx];
-}
+//     return unsampled_survivors_i[idx];
+// }
 
 /**
  * Sorts global times to run from present to past (0->inf) and orders ALL vector parameters to match this.
