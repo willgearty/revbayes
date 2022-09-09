@@ -517,6 +517,8 @@ double BirthDeathSamplingTreatmentProcess::computeLnProbabilityTimes( void ) con
     return lnProbTimes;
 }
 
+
+
 // // To call this to do the whole tree, we need to find the index of the root, then call it there
 // void BirthDeathSamplingTreatmentProcess::countAllNodesRecursive(const TopologyNode& n, size_t idx) const
 // {
@@ -722,6 +724,147 @@ bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
 
   return false;
 }
+
+// bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
+// {
+//     // get node/time variables
+//     size_t num_nodes = value->getNumberOfNodes();
+
+//     // clear current
+//     serial_tip_ages.clear();
+//     serial_sampled_ancestor_ages.clear();
+//     event_tip_ages.clear();
+//     event_sampled_ancestor_ages.clear();
+//     serial_bifurcation_times.clear();
+//     event_bifurcation_times.clear();
+//     unsampled_survivors_i.clear();
+
+//     // initialize vectors of vectors
+//     event_sampled_ancestor_ages = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//     event_tip_ages = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//     event_bifurcation_times = std::vector<std::vector<double> >(global_timeline.size(),std::vector<double>(0,1.0));
+//     unsampled_survivors_i = std::vector<int>(global_timeline.size(),0);
+
+//     std::vector<TopologyNode*> nodes;
+//     std::vector<size_t> node_intervals = std::vector<size_t>(num_nodes,0);
+
+//     TopologyNode* root = &value->getRoot();
+//     nodes.push_back(root);
+//     size_t stack_size = 1;
+//     node_intervals[root->getIndex()] = findIndex(root->getAge());
+
+//     while ( stack_size > 0 ) {
+//         const TopologyNode* n = nodes.back();
+
+//         // Handle the stack
+//         nodes.pop_back();
+//         if ( n->isInternal() )
+//         {
+//             const std::vector<TopologyNode*>& children = n->getChildren();
+//             for (size_t i = 0; i < children.size(); ++i)
+//             {
+//                 nodes.push_back(children[i]);
+//             }
+//         }
+//         stack_size = nodes.size();
+
+//         // Make sure we have the right model index
+//         int at_event = -1;
+//         double t = n->getAge();
+//         size_t idx = 0;
+//         if ( n->isRoot() )
+//         {
+//             idx = root->getIndex();
+//         }
+//         else
+//         {
+//             idx = node_intervals[n->getParent().getIndex()];
+//             while ( t < global_timeline[idx] )
+//             {
+//                 ++unsampled_survivors_i[idx];
+//                 --idx;
+//             }
+//             node_intervals[n->getIndex()] = idx;
+//         }
+
+//         // t < global_timeline[idx] by construction
+//         if ( global_timeline[idx] - t < 1E-4 ) {
+//             at_event = idx;
+//         } else if ( idx + 1 < global_timeline.size() && t - global_timeline[idx + 1] < 1E-4 ) {
+//             --unsampled_survivors_i[idx + 1];
+//             at_event = idx + 1;
+//         }
+
+//         if ( n->isTip() && n->isFossil() && n->isSampledAncestor() )
+//         {
+//         // node is sampled ancestor
+//             int at_event = whichIntervalTime(t);
+
+//             // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
+//             if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
+//             {
+//                 serial_sampled_ancestor_ages.push_back(t);
+//             }
+//             else
+//             {
+//                 event_sampled_ancestor_ages[at_event].push_back(t);
+//             }
+//         }
+//         else if ( n->isTip() && n->isFossil() && !n->isSampledAncestor() )
+//         {
+//             // node is serial leaf
+//             int at_event = whichIntervalTime(t);
+
+//             // If this tip is not at an event time (and specifically at an event time with Phi[i] > 0), it's a serial tip
+//             if (at_event == -1 || phi_event[at_event] < DBL_EPSILON)
+//             {
+//                 serial_tip_ages.push_back(t);
+//             }
+//             else
+//             {
+//                 event_tip_ages[at_event].push_back(t);
+//             }
+//         }
+//         else if ( n->isTip() && !n->isFossil() )
+//         {
+//             // Node is at present, this can happen even if Phi[0] = 0, so we check if there is really a sampling event at the present
+//             if (phi_event[0] >= DBL_EPSILON)
+//             {
+//                 // node is extant leaf
+//                 event_tip_ages[0].push_back(0.0);
+//             }
+//             else
+//             {
+//                 serial_tip_ages.push_back(0.0);
+//             }
+//         }
+//         else if ( n->isInternal() && !n->getChild(0).isSampledAncestor() && !n->getChild(1).isSampledAncestor() )
+//         {
+//             if ( n->isRoot() == false || use_origin == true )
+//             {
+//                 // node is bifurcation event (a "true" node)
+//                 int at_event = whichIntervalTime(t);
+
+//                 // If this bifurcation is not at an event time (and specifically at an event time with Lambda[i] > 0), it's a serial bifurcation
+//                 if ( at_event == -1 || lambda_event[at_event] < DBL_EPSILON)
+//                 {
+//                     serial_bifurcation_times.push_back(t);
+//                 }
+//                 else
+//                 {
+//                     event_bifurcation_times[at_event].push_back(t);
+//                 }
+//             }
+//         }
+//         else if ( n->isInternal() && n->getChild(0).isSampledAncestor() && n->getChild(1).isSampledAncestor() )
+//         {
+//             return true;
+//         }
+
+//     }
+
+//     return false;
+// }
 
 // bool BirthDeathSamplingTreatmentProcess::countAllNodes(void) const
 // {
