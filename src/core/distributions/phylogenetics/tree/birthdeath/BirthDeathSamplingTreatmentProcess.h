@@ -70,7 +70,6 @@ namespace RevBayesCore {
         void                                            checkVectorSizes(const TypedDagNode<RbVector<double> >* v1, const TypedDagNode<RbVector<double> >* v2, int v1_minus_v2, const std::string& param_name, bool is_rate) const;
         double                                          computeLnProbabilityTimes(void) const;                                  //!< Compute the log-transformed probability of the current value.
         bool                                            countAllNodes(void) const;                                              //!< Count bifurcating nodes, count all heterochronous nodes as either phi- or Phi-sampled and as either sampled ancestors or sampled extinct tips
-        void                                            countAllNodesRecursive(const TopologyNode& n, size_t idx) const;        //!< Count bifurcating nodes, count all heterochronous nodes as either phi- or Phi-sampled and as either sampled ancestors or sampled extinct tips
         double                                          lnD(size_t i, double t) const;                                          //!< Branch-segment probability at time t with index i, using pre-computed vectors
         double                                          E(size_t i, double t, bool computeSurvival = false) const;                                       //!< Extinction probability at time t with index i, using pre-computed vectors
         void                                            expandNonGlobalProbabilityParameterVector(std::vector<double> &par, const std::vector<double> &par_times) const; //!< Updates vector par such that it matches the global timeline
@@ -89,12 +88,10 @@ namespace RevBayesCore {
         void                                            sortGlobalTimesAndVectorParameter(void) const;                          //!< Sorts times to run from 0->inf, and orders ALL vector parameters to match
         void                                            sortNonGlobalTimesAndVectorParameter(std::vector<double>& times, std::vector<double>& par) const;     //!< Sorts times to run from 0->inf, and orders par to match
         int                                             survivors(double t) const;                                              //!< Number of species alive at time t.
-        int                                             survivors(size_t idx) const;                                            //!< Number of species alive at time s_i.
         int                                             whichIntervalTime(double t) const;                                      //!< If a time corresponds to an interval/event time, returns that interval, otherwise returns -1
 
         // members
         bool                                            using_global_timeline;
-        mutable bool                                    count_node_validity_flag;
 
         const TypedDagNode<double >*                    homogeneous_lambda;                                    //!< The homogeneous birth rates.
         const TypedDagNode<RbVector<double> >*          heterogeneous_lambda;                                  //!< The heterogeneous birth rates.
@@ -136,7 +133,6 @@ namespace RevBayesCore {
         mutable std::vector<std::vector<double> >       event_bifurcation_times;                               //!< The ages of all bifurcation events in the tree at burst events
 
         mutable double                                  offset;                                                //!< In the case there the most recent tip is at time y, we internally adjust by this time and treat y as the present; this does not affect the boundary times of the rate shifts
-        // int                                             num_extant_taxa;
 
         mutable std::vector<double>                     lambda;
         mutable std::vector<double>                     mu;
