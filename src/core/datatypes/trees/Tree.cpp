@@ -799,7 +799,10 @@ size_t Tree::getNumberOfInteriorNodes( void ) const
 
     if ( isRooted() )
     {
-        return preliminaryNumIntNodes - 1;
+	if (preliminaryNumIntNodes > 1)
+	    return preliminaryNumIntNodes - 1;
+	else
+	    return 0;
     }
     else
     {
@@ -1471,7 +1474,7 @@ void Tree::orderNodesByIndex( void )
     std::vector<bool> used = std::vector<bool>(nodes.size(),false);
     for (int i = 0; i < nodes.size(); i++)
     {
-        if ( nodes[i]->getIndex() > nodes.size() )
+        if ( nodes[i]->getIndex() >= nodes.size() )
         {
             throw RbException("Problem while working with tree: Node had bad index. Index was '" + StringUtilities::to_string( nodes[i]->getIndex() ) + "' while there are only '" + StringUtilities::to_string( nodes.size() ) + "' nodes in the tree.");
         }
@@ -1527,6 +1530,11 @@ void Tree::printForComplexStoring ( std::ostream &o, const std::string &sep, int
         StringUtilities::fillWithSpaces(s, l, left);
     }
     o << s;
+}
+
+json Tree::toJSON() const
+{
+    return this->getNewickRepresentation(false);
 }
 
 void Tree::collapseSampledAncestors()
