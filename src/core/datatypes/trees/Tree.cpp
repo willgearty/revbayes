@@ -797,7 +797,7 @@ size_t Tree::getNumberOfInteriorNodes( void ) const
 
     size_t preliminaryNumIntNodes = getNumberOfNodes() - getNumberOfTips();
 
-    if ( isRooted() )
+    if ( preliminaryNumIntNodes > 1 )
     {
 	if (preliminaryNumIntNodes > 1)
 	    return preliminaryNumIntNodes - 1;
@@ -806,7 +806,7 @@ size_t Tree::getNumberOfInteriorNodes( void ) const
     }
     else
     {
-        return preliminaryNumIntNodes;
+        return 0;
     }
 
 }
